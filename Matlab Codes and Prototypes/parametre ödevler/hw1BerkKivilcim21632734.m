@@ -1,0 +1,29 @@
+% Berk Kývýlcým 21632734
+u=3;
+n=6;
+mx=1.2;
+my=2.4;
+mz=1.3;
+rxy=0.2;
+rxz=0.4;
+ryz=0.3;
+L=[-0.2 ;-0.1; 0; -6.1; -6; -7.1];
+A=[0 0 0; 0 0 0; 0 0 0; -1 0 0; 0 -1 0; 0 0 -1]; %cooefficients of observation equations(desing matrix)
+K=[mx*mx rxy*mx*my rxz*mx*mz 0 0 0; rxy*mx*my my*my ryz*my*mz 0 0 0; rxz*mz*mx ryz*mz*my mz*mz 0 0 0; 0 0 0 5.29 0.69 0.92; 0 0 0 0.69 2.25 0.45; 0 0 0 0.92 0.45 1]
+QQ=(0.25)*K
+P=inv(QQ) %Reduced observation vector
+N=transpose(A)*P*A %coofficients of normal equation
+Qx=inv(N)
+b=transpose(A)*P*L %constant of normal equation
+dx=Qx*b
+V=A*dx-L %Residual (corrections) vector of the observation
+m0 = sqrt(transpose(V)*P*V/(n-u)) %a posteriors standart deviation of unit weight
+Ql_l=A*Qx*transpose(A)%cofactor matrixof the adjusted observation
+Qll=inv(P)
+Qvv=Qll-Ql_l %cofactor matrix of the residuals to the observation
+Mx=m0*sqrt(diag(Qx)) %standart formal errors estimated parameters
+ml = m0*sqrt(diag(Ql_l))%standart errors at the adjustment
+mv = m0*sqrt(diag(Qvv))%standart errors at the correction to the observation
+Kll=m0^2*Qll %variance-covariance matrix of the adjusted
+Kxx=m0^2*Qx %variance-covariance matrix of the  estimated(unknown)
+
